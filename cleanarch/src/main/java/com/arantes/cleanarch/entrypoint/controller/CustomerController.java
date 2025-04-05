@@ -1,5 +1,6 @@
 package com.arantes.cleanarch.entrypoint.controller;
 
+import com.arantes.cleanarch.core.usecase.DeleteCustomerByIdUseCase;
 import com.arantes.cleanarch.core.usecase.FindCustomerByIdUseCase;
 import com.arantes.cleanarch.core.usecase.InsertCustomerUseCase;
 import com.arantes.cleanarch.core.usecase.UpdateCustomerUseCase;
@@ -25,6 +26,9 @@ public class CustomerController {
     private UpdateCustomerUseCase updateCustomerUseCase;
 
     @Autowired
+    private DeleteCustomerByIdUseCase deleteCustomerByIdUseCase;
+
+    @Autowired
     private CustomerMapper customerMapper;
 
     @PostMapping
@@ -47,6 +51,12 @@ public class CustomerController {
         var customer = customerMapper.toCustomer(customerRequest);
         customer.setId(id);
         updateCustomerUseCase.update(customer, customerRequest.getZipCode());
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable final String id) {
+        deleteCustomerByIdUseCase.delete(id);
         return ResponseEntity.noContent().build();
     }
 

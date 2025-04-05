@@ -2,6 +2,7 @@ package com.arantes.cleanarch.entrypoint.controller;
 
 import com.arantes.cleanarch.core.usecase.FindCustomerByIdUseCase;
 import com.arantes.cleanarch.core.usecase.InsertCustomerUseCase;
+import com.arantes.cleanarch.core.usecase.UpdateCustomerUseCase;
 import com.arantes.cleanarch.entrypoint.controller.mapper.CustomerMapper;
 import com.arantes.cleanarch.entrypoint.controller.request.CustomerRequest;
 import com.arantes.cleanarch.entrypoint.controller.response.CustomerResponse;
@@ -21,6 +22,9 @@ public class CustomerController {
     private FindCustomerByIdUseCase findCustomerByIdUseCase;
 
     @Autowired
+    private UpdateCustomerUseCase updateCustomerUseCase;
+
+    @Autowired
     private CustomerMapper customerMapper;
 
     @PostMapping
@@ -35,6 +39,15 @@ public class CustomerController {
         var customer = findCustomerByIdUseCase.find(id);
         var customerResponse = customerMapper.toCustomerResponse(customer);
         return ResponseEntity.ok().body(customerResponse);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Void> update(@PathVariable final String id,
+                                       @Valid @RequestBody CustomerRequest customerRequest) {
+        var customer = customerMapper.toCustomer(customerRequest);
+        customer.setId(id);
+        updateCustomerUseCase.update(customer, customerRequest.getZipCode());
+        return ResponseEntity.noContent().build();
     }
 
 }

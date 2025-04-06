@@ -8,6 +8,6 @@ public class CustomerResponse {
     private String name;
     private String cpf;
     private Boolean isValidCpf;
-    private AddressResponse addressResponse;
+    private AddressResponse address;
 
 }
